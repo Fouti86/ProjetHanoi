@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication, QWidget
 from PyQt6.QtGui import QPainter, QColor, QBrush
 from PyQt6.QtCore import Qt, QTimer
 
-from BlocAlgo.HanoiIterative import HanoiIterative
+from HanoiIterative import HanoiIterative
 
 class SimulationMoves(QWidget):
 
@@ -52,7 +52,11 @@ class SimulationMoves(QWidget):
         :return: Aucun (met à jour self.towers et rafraîchit l'affichage).
         """
         if self.index < len(self.movements):
-            move_num, source, destination, palets_origin_before, palets_destination_before = self.movements[self.index]
+            # move_num, source, destination, palets_origin_before, palets_destination_before = self.movements[self.index]
+            
+# -----------------------MODIF 1---------------------------------------
+            move_num, source, destination, palets_origin_before, palets_destination_before, _ = self.movements[self.index]
+
             self.move_palet(source - 1, destination - 1)  # Ajustement pour indexation zéro
             print(f"Mouvement {move_num}: Tour {source} → Tour {destination} | Palets avant (Origine: {palets_origin_before}, Destination: {palets_destination_before})")
             self.index += 1

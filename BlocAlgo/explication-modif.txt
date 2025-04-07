@@ -1,0 +1,3 @@
+Modification 1 : 
+- Ajouter l’état complet des 3 tours (self.towers) à chaque mouvement enregistré
+- Pour tracer précisément (déboguer) l'évolution de la situation du jeu à chaque coup

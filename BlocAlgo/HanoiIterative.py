@@ -48,8 +48,17 @@ class HanoiIterative:
                 from_tower, to_tower = to_tower, from_tower  # Corrige l'ordre des tours
 
             # Enregistre le mouvement dans la liste
+            # self.movements.append((
+            #     move, from_tower, to_tower, nb_palets_origine_avant, nb_palets_destination_avant
+            # ))
+# -----------------------MODIF 1---------------------------------------
             self.movements.append((
-                move, from_tower, to_tower, nb_palets_origine_avant, nb_palets_destination_avant
+                move,
+                from_tower,
+                to_tower,
+                nb_palets_origine_avant,
+                nb_palets_destination_avant,
+                {tower: list(discs) for tower, discs in self.towers.items()}  # ← on ajoute un snapshot de l'état actuel des 3 tours
             ))
 
     def get_move_matrix(self):
