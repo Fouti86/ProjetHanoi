@@ -20,8 +20,10 @@ class DobotControl:
             raise RuntimeError("Aucun port disponible pour connecter le Dobot.")
         print(f'available ports: {[x.device for x in available_ports]}')
 
-        self.port = available_ports[4].device  # Choisir le port approprié
-        print(f"Connexion au port : {self.port}")
+        self.port = next((p.device for p in available_ports if "usbserial" in p.device or "usbmodem" in p.device), None)
+        if self.port is None:
+            raise RuntimeError("Aucun port USB série valide trouvé pour le Dobot.")
+
         # Appliquer le filtre avant d'initialiser pydobot
         sys.stdout = FilterPydobotLogs(sys.stdout)
         self.device = pydobot.Dobot(port=self.port, verbose=True)
@@ -36,12 +38,14 @@ class DobotControl:
         self.CALIB_Y = 0
         self.CALIB_Z = 0
         # Va à la position home
-        self.device.home()
+        #self.device.return_home()
+        self.return_to_home()
         #self.calibrer_hauteur()  # Définir une nouvelle référence Z
         
         # Se repositionner à home après calibration
         self.move_to_and_check(self.home_x, self.home_y, self.home_z)
-        self.device.move_to(home_x, home_y, home_z, 0, True)
+        #self.device.move_to_and_check(home_x, home_y, home_z, 0, True)
+        self.move_to_and_check(home_x, home_y, home_z, 0, True)
 
     def execute_init(self):
         
@@ -238,8 +242,7 @@ class DobotControl:
                 self.deplacer_vers_colonne_droite()
             case _:
                 print(f"Erreur axe_id")
-        
-            
+          
     def realiser_deplacement(self, origine , destination, palets_origin_before, palets_destination_before):
         """
         Réalise le déplacement entre deux axes.
@@ -270,15 +273,22 @@ class DobotControl:
         """
         Lance la calibration manuelle du robot.
         """
-        app = QApplication(sys.argv)
-        window = DobotCalibrator(self)
-        window.show()
+        # app = QApplication(sys.argv)
+        # window = DobotCalibrator(self)
+        # window.show()
         self.CALIB_Y = self.cible_y
         self.CALIB_Z = self.cible_z
-        sys.exit(app.exec())
+        # sys.exit(app.exec())
 
 
 if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    algorithm = HanoiIterative(5)
+    window = DobotCalibrator(algorithm)
+    window.show()
+    # self.CALIB_Y = self.cible_y
+    # self.CALIB_Z = self.cible_z
+    
     robot = DobotControl()
     robot.calibrer_manuellement()
     print(f"Phase d'initialisation du robot...")
@@ -291,3 +301,5 @@ if __name__ == "__main__":
     for coup, origine, destination, palets_origin_before, palets_destination_before in hanoi.get_move_matrix():
         print(f"Exécution du déplacement {coup}: {origine} -> {destination}")
         robot.realiser_deplacement(origine, destination, palets_origin_before, palets_destination_before)
+    
+    sys.exit(app.exec())
