@@ -29,7 +29,7 @@ class DobotControl:
             raise RuntimeError("Aucun port disponible pour connecter le Dobot.")
         print(f'available ports: {[x.device for x in available_ports]}')
 
-        self.port = available_ports[4].device  # Choisir le port approprié
+        self.port = available_ports[0].device  # Choisir le port approprié
         print(f"Connexion au port : {self.port}")
         # Appliquer le filtre avant d'initialiser pydobot
         sys.stdout = FilterPydobotLogs(sys.stdout)
